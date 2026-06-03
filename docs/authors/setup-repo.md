@@ -25,26 +25,30 @@ If you are inside STScI, the fastest path is the Slack bot. It provisions the
 repository, applies the standard CI configuration, and wires up the pieces you
 would otherwise request by hand (access, secrets placeholders, the docs deploy).
 
-Typical flow:
+Send the bot a one-line command in Slack:
 
-1. Open the bot's channel in Slack.
-2. Ask it to create a notebook repo and answer the prompts (repo name, science
-   tooling, who should have access).
-3. The bot creates the repository, commits the caller workflows, and points you
-   at the new repo when it is ready.
-4. Clone it, drop your notebooks under the repo's notebook directory, and open a
-   pull request. The CI takes over from there.
+```
+!CreateRepoFromTemplate spacetelescope <your-repo-name> notebook-ci-template
+```
 
-!!! note "Two details to confirm before this page ships"
-    This draft leaves the exact specifics as placeholders so we do not document
-    something incorrectly:
+The three arguments are:
 
-    - **How to reach the bot** — the Slack channel or app name, and the exact
-      command or slash trigger that starts a repo (for example
-      `/notebook-ci new` or `@<bot> create repo`).
-    - **What it asks for** — the real list of prompts and any required fields.
+| Argument | Value | Meaning |
+| --- | --- | --- |
+| Organization | `spacetelescope` | Where the new repo is created |
+| Repository name | `<your-repo-name>` | Your new repo's name, no spaces |
+| Template | `notebook-ci-template` | The CI-ready template to copy from |
 
-    Send me those and I will replace this callout with the precise steps.
+For example:
+
+```
+!CreateRepoFromTemplate spacetelescope jwst-coron-demo notebook-ci-template
+```
+
+creates `spacetelescope/jwst-coron-demo` from the template, with the caller
+workflows already committed. When the bot confirms the repo is ready, clone it,
+drop your notebooks under its notebook directory, and open a pull request. The CI
+takes over from there.
 
 !!! tip "Internal only"
     The Slack bot lives behind STScI's Slack and access controls. If you are not
@@ -52,23 +56,25 @@ Typical flow:
 
 ## General public: use the template repository
 
-If you are outside STScI, start from the **template repository**. GitHub's "Use
-this template" turns it into a brand-new repo of your own, with the CI workflows,
-example structure, and docs deploy already in place.
+If you are outside STScI, start from the template repository,
+[**spacetelescope/notebook-ci-template**](https://github.com/spacetelescope/notebook-ci-template).
+GitHub's "Use this template" turns it into a brand-new repo of your own, with the
+CI workflows, example structure, and docs deploy already in place.
 
-1. Open the template repository on GitHub.
+1. Open the template:
+   [github.com/spacetelescope/notebook-ci-template](https://github.com/spacetelescope/notebook-ci-template).
 2. Click **Use this template → Create a new repository**.
 3. Name your repo, choose the owner, and create it.
-4. In your new repo, set **Settings → Pages → Source** to **GitHub Actions** (one
+4. Clone your new repo:
+
+    ```bash
+    git clone https://github.com/<your-account>/<your-repo-name>.git
+    ```
+
+5. In your new repo, set **Settings → Pages → Source** to **GitHub Actions** (one
    time) so the docs site can publish.
-5. Add your notebooks, declare dependencies in `requirements.txt`, and open a pull
+6. Add your notebooks, declare dependencies in `requirements.txt`, and open a pull
    request to see the CI run.
-
-!!! note "One detail to confirm before this page ships"
-    - **The template repository URL** — the public `…/template-…` repo that "Use
-      this template" should point at.
-
-    Send me the link and I will wire up the button and the clone command here.
 
 !!! warning "Use the template, do not fork"
     "Use this template" gives you a clean, independent repository with no upstream
