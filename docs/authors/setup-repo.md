@@ -91,7 +91,7 @@ CI workflows, example structure, and docs deploy already in place.
 - **Local testing** — the repo ships the `scripts/test-local-ci.sh` harness so you
   can reproduce CI on your laptop before pushing.
 - **Pinned, maintained CI** — the workflows reference a pinned version (for
-  example `@v3`); you never edit them, and updates come from upstream.
+  example `@v1`); you never edit them, and updates come from upstream.
 
 ## Next steps
 
