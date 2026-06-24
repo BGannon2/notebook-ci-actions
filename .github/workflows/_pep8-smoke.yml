@@ -1,0 +1,30 @@
+name: _pep8 smoke (test only)
+on:
+  workflow_dispatch:
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: python -m pip install --quiet flake8 numpy pytz
+      - name: Make fixtures
+        run: |
+          printf '%s' '{"cells":[{"cell_type":"code","metadata":{},"execution_count":null,"outputs":[],"source":["import os,sys\n","x=1+2\n"]}],"metadata":{},"nbformat":4,"nbformat_minor":5}' > bad.ipynb
+          printf '%s' '{"cells":[{"cell_type":"code","metadata":{},"execution_count":null,"outputs":[],"source":["x = 1 + 2\n","print(x)\n"]}],"metadata":{},"nbformat":4,"nbformat_minor":5}' > good.ipynb
+          printf 'import os,sys\nx=1+2\n' > bad.py
+          printf 'import os\nprint(os.getcwd())\n' > good.py
+      - name: Run checkers (report exit codes)
+        run: |
+          set +e
+          echo "== bad.ipynb (want 99) =="
+          python .github/helpers/pep8_nb_style_checker.py bad.ipynb; echo "EXIT_BAD_NB=$?"
+          echo "== good.ipynb (want 0) =="
+          python .github/helpers/pep8_nb_style_checker.py good.ipynb; echo "EXIT_GOOD_NB=$?"
+          echo "== bad.py (want 99) =="
+          python .github/helpers/pep8_script_style_checker.py bad.py; echo "EXIT_BAD_PY=$?"
+          echo "== good.py (want 0) =="
+          python .github/helpers/pep8_script_style_checker.py good.py; echo "EXIT_GOOD_PY=$?"
