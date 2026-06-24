@@ -28,3 +28,7 @@ jobs:
           python .github/helpers/pep8_script_style_checker.py bad.py; echo "EXIT_BAD_PY=$?"
           echo "== good.py (want 0) =="
           python .github/helpers/pep8_script_style_checker.py good.py; echo "EXIT_GOOD_PY=$?"
+          echo "== real repo notebook =="
+          NB=$(find . -name '*.ipynb' ! -name 'bad.ipynb' ! -name 'good.ipynb' | head -1)
+          echo "Real notebook: ${NB:-none found}"
+          if [ -n "$NB" ]; then python .github/helpers/pep8_nb_style_checker.py "$NB" >/tmp/r 2>&1; echo "EXIT_REAL_NB=$?"; grep -E "PEP8 error|E[0-9]{3}|W[0-9]{3}|F[0-9]{3}" /tmp/r | head -8; fi
