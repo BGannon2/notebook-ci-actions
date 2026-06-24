@@ -28,6 +28,10 @@ jobs:
           python .github/helpers/pep8_script_style_checker.py bad.py; echo "EXIT_BAD_PY=$?"
           echo "== good.py (want 0) =="
           python .github/helpers/pep8_script_style_checker.py good.py; echo "EXIT_GOOD_PY=$?"
+          echo "== nbqa flake8 (alternative) =="
+          python -m pip install --quiet nbqa
+          nbqa flake8 good.ipynb; echo "NBQA_GOOD=$? (want 0)"
+          nbqa flake8 bad.ipynb >/tmp/nbqabad 2>&1; echo "NBQA_BAD=$? (want non-zero)"; head -4 /tmp/nbqabad
           echo "== real repo notebook =="
           NB=$(find . -name '*.ipynb' ! -name 'bad.ipynb' ! -name 'good.ipynb' | head -1)
           echo "Real notebook: ${NB:-none found}"
